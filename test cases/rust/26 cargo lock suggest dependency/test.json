@@ -1,0 +1,7 @@
+{
+  "stdout": [
+    {
+      "line": "test cases/rust/26 cargo lock suggest dependency/meson.build:3:0: ERROR: Rust dependency \"bar-1.0-rs\" not found, but following versions were found using Cargo.lock import: \"bar-1-rs\", \"bar-2-rs\", \"bar-0-rs\", \"bar-0.8-rs\""
+    }
+  ]
+}
