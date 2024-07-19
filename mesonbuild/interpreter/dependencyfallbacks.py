@@ -340,6 +340,23 @@ class DependencyFallbacksHolder(MesonInterpreterObject):
                         self._subproject_impl(subp_name, varname)
                     break
 
+                # Check if we could have a matching Rust crate imported from
+                # Cargo.lock, with expected api version. We know there is no
+                # wrap-file defined to match this crate.
+                if name.endswith('-rs'):
+                    s = name.split('-')
+                    if (len(s) < 3):
+                        continue
+                    rs_ending = s.pop()
+                    version = s.pop()
+                    crate = '-'.join(s)
+                    cargo_wraps = self.wrap_resolver.get_cargo_wraps(crate)
+                    if not cargo_wraps:
+                        continue
+                    raise DependencyException(f'Rust dependency "{name}" not found, ' +
+                                              'but following versions were found using Cargo.lock import: ' +
+                                              ', '.join(map(lambda n: '"' + n + '"', cargo_wraps)))
+
         candidates = self._get_candidates()
 
         # writing just "dependency('')" is an error, because it can only fail

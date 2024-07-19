@@ -427,6 +427,24 @@ class Resolver:
                 return wrap_name
         return None
 
+    def get_cargo_wraps(self, cratename: str) -> T.List[str]:
+        found = []
+        for wrap in self.wraps.values():
+            if wrap.get('method') != 'cargo':
+                continue
+            if not wrap.name.endswith('-rs'):
+                continue
+            s = wrap.name.split('-')
+            if len(s) < 3:
+                continue
+            rs_ending = s.pop()
+            version = s.pop()
+            wrap_cratename = '-'.join(s)
+
+            if wrap_cratename == cratename:
+                found.append(wrap.name)
+        return found
+
     def resolve(self, packagename: str, force_method: T.Optional[Method] = None) -> T.Tuple[str, Method]:
         wrap = self.wraps.get(packagename)
         if wrap is None:
